@@ -25,7 +25,24 @@ def main_menu():
 3. Search a Note
 4. Delete a Note
 5. Edit a Note""")
-    choice = int(input("Enter a Number: "))
+    while True:
+        try:
+            choice = int(input("Enter a Number: "))
+            break
+        except ValueError:
+            print("The Given Value was not a Number")
+
+    match choice:
+        case 1:
+            create_new_note()
+        case 2:
+            preview_notes()
+        case 3:
+            search_note()
+        case 4:
+            delete_note()
+        case 5:
+            edit_note()
 
 
 def create_new_note():
@@ -51,10 +68,31 @@ def create_new_note():
         json.dump(note_list, f, indent=4)
 
 
+def preview_notes():
+    try:
+        # Open the existing json file for reading existing notes without overwriting it
+        with open("note_list.json", "r", encoding="utf-8") as f:
+            note_list = json.load(f)
+
+        # Cycle through each note and Print it
+        for index, note in enumerate(note_list, start=1):
+            print(f"\nNote {index}")
+            print(f"Title: {note['title']}")
+            print(f"Content: {note['content']}")
+
+    except FileNotFoundError:
+        print("There are Currently No Notes")
+        choice = input("Want to create notes [Y/n]: ").lower()
+
+        if choice == "y" or choice == "yes":
+            create_new_note()
+        else:
+            print("Okay, Be Productive!")
+
+
 def main():
     print_ascii()
     main_menu()
-    create_new_note()
 
 
 if __name__ == "__main__":
