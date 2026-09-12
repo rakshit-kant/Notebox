@@ -10,17 +10,18 @@ class Note:
 
 
 def print_ascii():
-    print("""▓   ▓  ▓▓▓  ▓▓▓▓▓ ▓▓▓▓▓ ▓▓▓▓   ▓▓▓  ▓   ▓   
+    print("""\n\n▓   ▓  ▓▓▓  ▓▓▓▓▓ ▓▓▓▓▓ ▓▓▓▓   ▓▓▓  ▓   ▓   
 ▓▓  ▓░▓ ░░▓  ░▓░░░▓░░░░░▓░░░▓ ▓ ░░▓  ▓ ▓ ░  
 ▓░▓ ▓░▓░ ░▓░  ▓░░░▓▓▓▓░░▓▓▓▓░░▓░ ░▓░  ▓ ░ ░ 
 ▓░░▓▓░▓░░ ▓░░ ▓░░ ▓░░░░ ▓░░░▓ ▓░░ ▓░░▓ ▓ ░  
 ▓░░ ▓░░▓▓▓ ░░ ▓░░ ▓▓▓▓▓░▓▓▓▓░░ ▓▓▓ ░▓ ░ ▓   
  ░░  ░░ ░░░ ░  ░░  ░░░░░ ░░░░ ░ ░░░ ░░ ░ ░  
-  ░   ░  ░░░    ░   ░░░░░ ░░░░   ░░░  ░   ░ \n\n""")
+  ░   ░  ░░░    ░   ░░░░░ ░░░░   ░░░  ░   ░ \n\n\n""")
 
 
 def main_menu():
-    print("""1. Create a Note
+    print("""0. Exit the Program
+1. Create a Note
 2. See all Notes
 3. Search a Note
 4. Delete a Note
@@ -33,6 +34,8 @@ def main_menu():
             print("The Given Value was not a Number")
 
     match choice:
+        case 0:
+            return
         case 1:
             create_new_note()
         case 2:
@@ -80,6 +83,37 @@ def preview_notes():
             print(f"Title: {note['title']}")
             print(f"Content: {note['content']}")
 
+    except FileNotFoundError:
+        print("There are Currently No Notes")
+        choice = input("Want to create notes [Y/n]: ").lower()
+
+        if choice == "y" or choice == "yes":
+            create_new_note()
+        else:
+            print("Okay, Be Productive!")
+
+
+def search_note():
+    try:
+        # Open the existing json file for reading existing notes without overwriting it
+        with open("note_list.json", "r", encoding="utf-8") as f:
+            note_list = json.load(f)
+
+        query = input("Enter Something to Search for: ").strip().lower()
+        found = False
+
+        for index, note in enumerate(note_list, start=1):
+            title = note["title"].lower()
+            content = note["content"].lower()
+
+            if query in title or query in content:
+                print(f"\nNote {index}")
+                print(f"Title: {note['title']}")
+                print(f"Content: {note['content']}")
+                found = True
+
+            if not found:
+                print(f"No Notes Found containing: {query}")
     except FileNotFoundError:
         print("There are Currently No Notes")
         choice = input("Want to create notes [Y/n]: ").lower()
